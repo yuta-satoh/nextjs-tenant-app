@@ -1,31 +1,55 @@
 {
   "items": [
     {
-      "name": "pizza",
-      "description": "aaaaaaa",
+      "name": "ピザ",
+      "description": "焼きたて",
       "price": "1000",
+      "imageUrl": "https://dummyimage.com/100/ff006a/fff.png",
       "deleted": false,
+      "options": {
+        "name": "チーズ増量",
+        "description": "チーズ3倍増",
+        "price": "150"
+      },
       "id": 1
     },
     {
-      "name": "そば",
-      "description": "１０割",
-      "price": "1500",
+      "name": "おにぎり",
+      "description": "しゃけ",
+      "price": "100",
+      "imageUrl": "/images/NoImage.png",
       "deleted": false,
+      "options": {
+        "name": "味噌汁",
+        "description": "味噌汁",
+        "price": "100"
+      },
       "id": 2
     },
     {
-      "name": "うどん",
-      "description": "讃岐うどん",
-      "price": "1200",
+      "name": "ラーメン",
+      "description": "醤油",
+      "price": "900",
+      "imageUrl": "/images/NoImage.png",
       "deleted": false,
+      "options": {
+        "name": "",
+        "description": "",
+        "price": "0"
+      },
       "id": 3
     },
     {
-      "name": "焼き鳥",
-      "description": "タレ",
-      "price": "100",
+      "name": "おにぎり",
+      "description": "あああ",
+      "price": "0",
+      "imageUrl": "/images/NoImage.png",
       "deleted": false,
+      "options": {
+        "name": "",
+        "description": "",
+        "price": "0"
+      },
       "id": 4
     }
   ]

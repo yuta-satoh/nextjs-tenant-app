@@ -1,39 +1,51 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from '@next/font/google';
-import styles from '@/styles/Home.module.css';
-import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
 
 type Option = {
   name: string;
   description: string;
   price: number;
 };
+
+type ItemData = {
+  item: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    deleted: boolean;
+    imageUrl: string;
+    options: Option;
+  };
+};
+
 type Item = {
+  id: number;
   name: string;
   description: string;
   price: number;
+  deleted: boolean;
   imageUrl: string;
   options: Option;
 };
-
-export default function Post() {
+export default function Post({ item }: ItemData) {
   const [itemData, setItemData] = useState<Item>({
-    name: '',
-    description: '',
-    price: 0,
-    imageUrl: '/images/NoImage.png',
-    options:{
-      name: '',
-      description: '',
-      price: 0,
-    }
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    price: item.price,
+    imageUrl: item.imageUrl,
+    deleted: item.deleted,
+    options: {
+      name: item.options.name,
+      description: item.options.description,
+      price: item.options.price,
+    },
   });
 
   const i = itemData;
-
-  const url = 'http://localhost:8000/items';
 
   function makeDate(
     e:
@@ -43,38 +55,43 @@ export default function Post() {
     const { name, value } = e.target;
     setItemData((i) => ({ ...i, [name]: value }));
   }
+
   function makeOption(
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
     setItemData({
+      id: item.id,
       name: itemData.name,
       description: itemData.description,
       price: itemData.price,
       imageUrl: itemData.imageUrl,
-      options:{
+      deleted: item.deleted,
+      options: {
         name: e.target.value,
         description: i.options.description,
         price: i.options.price,
-      }
+      },
     });
   }
-    function makeOptionDescription(
+  function makeOptionDescription(
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
     setItemData({
+      id: item.id,
       name: itemData.name,
       description: itemData.description,
       price: itemData.price,
       imageUrl: itemData.imageUrl,
-      options:{
+      deleted: item.deleted,
+      options: {
         name: i.options.name,
         description: e.target.value,
         price: i.options.price,
-      }
+      },
     });
   }
   function makeOptionPrice(
@@ -83,33 +100,29 @@ export default function Post() {
       | React.ChangeEvent<HTMLTextAreaElement>
   ) {
     setItemData({
+      id: item.id,
       name: itemData.name,
       description: itemData.description,
       price: itemData.price,
       imageUrl: itemData.imageUrl,
-      options:{
+      deleted: item.deleted,
+      options: {
         name: i.options.name,
         description: i.options.description,
         price: Number(e.target.value),
-      }
+      },
     });
   }
-
-  function setOption(){
-    const option = itemData.options
-    
-  }
-
 
   function register() {
     if (
       i.name.length === 0 ||
-      i.description.length === 0 
+      i.description.length === 0
     ) {
       alert('空欄があります');
     } else {
-      fetch(url, {
-        method: 'POST',
+      fetch(`http://localhost:8000/items/${i.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -119,35 +132,23 @@ export default function Post() {
           price: `${i.price}`,
           imageUrl: `${i.imageUrl}`,
           deleted: false,
-          options:{
+          options: {
             name: `${i.options.name}`,
             description: `${i.options.description}`,
             price: `${i.options.price}`,
-          }
+          },
         }),
       });
-      setItemData({
-        name: '',
-        description: '',
-        price: 0,
-        imageUrl: '/images/NoImage.png',
-        options:{
-          name: '',
-          description: '',
-          price: 0,
-        }
-      });
-      alert('登録完了');
+      alert('更新完了');
     }
   }
-
   return (
     <>
       <Head>
-        <title>商品登録</title>
+        <title>{item.name}</title>
       </Head>
-      <h1>商品登録</h1>
-      <form action="" method="post">
+      <h1>商品詳細&nbsp;ID{item.id}</h1>
+      <form action="" method="POST">
         <div>
           <label htmlFor="name">商品名</label>
           <br />
@@ -175,6 +176,7 @@ export default function Post() {
             type="text"
             id="imageUrl"
             name="imageUrl"
+            value={i.imageUrl}
             onChange={makeDate}
           />
         </div>
@@ -237,14 +239,43 @@ export default function Post() {
             onChange={makeOptionPrice}
           />
         </div>
-        <p>オプション適用価格：{Number(i.price) + Number(i.options.price)}円</p>
+        <p>
+          オプション適用価格：
+          {Number(i.price) + Number(i.options.price)}円
+        </p>
         <button type="button" onClick={register}>
-          登録
+          更新
         </button>
       </form>
-      <Link href="/">
-        <p>一覧へ</p>
-      </Link>
+      <Link href="/">一覧へ</Link>
     </>
   );
+}
+
+export async function getStaticPaths() {
+  const res = await fetch('http://localhost:8000/items');
+  const items = await res.json();
+  const paths = items.map((item: Item) => ({
+    params: { id: item.id.toString() },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+type Params = {
+  params: { id: string };
+};
+
+export async function getStaticProps({ params }: Params) {
+  const id = params.id;
+  const res = await fetch(`http://localhost:8000/items/${id}`);
+  const item = await res.json();
+
+  return {
+    props: { item },
+    revalidate: 5,
+  };
 }

@@ -4,17 +4,14 @@ import { Inter } from '@next/font/google';
 import styles from '@/styles/Home.module.css';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { getSortedPostsData } from './item/itemlist';
-import { type } from 'os';
-import Item from '@/pages/components/item';
 
-export async function getStaticProps(){
+export async function getStaticProps() {
   const res = await fetch('http://localhost:8000/items');
-  const listData = await res.json();
-  console.log(listData)
-  return{ 
-    props:{listData}
-  }
+  const listData = await res.json(); 
+  return {
+    props: { listData },
+    revalidate: 10,
+  };
 }
 
 type List = {
@@ -26,6 +23,15 @@ type List = {
     deleted: boolean;
   }[];
 };
+
+function deleteItem(id: number) {
+  fetch(`http://localhost:8000/items/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
 
 export default function Home({ listData }: List) {
   return (
@@ -45,17 +51,22 @@ export default function Home({ listData }: List) {
       <main>
         <h1>商品一覧</h1>
       </main>
+      <Link href="components/register">
+        商品登録
+      </Link>
       <ul>
         {listData.map((data) => (
-          <li key={data.id}>{data.name}</li>
+          <li key={data.id}>
+            <Link href={`items/${data.id}`}>
+              {data.id}&nbsp;:&nbsp;{data.name}
+            </Link>
+            <p>{data.description}</p>
+            <Link href={'/'}>
+            <button onClick={() => deleteItem(data.id)}>削除</button>
+            </Link>
+          </li>
         ))}
       </ul>
-      <Link href="components/register">
-        <p>商品登録</p>
-      </Link>
-      <Link href="components/item">
-        <p>商品詳細</p>
-      </Link>
     </>
   );
 }
