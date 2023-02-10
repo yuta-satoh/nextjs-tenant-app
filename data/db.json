@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "name": "pizza",
+      "description": "aaaaaaa",
+      "price": "1000",
+      "deleted": false,
+      "id": 1
+    },
+    {
+      "name": "そば",
+      "description": "１０割",
+      "price": "1500",
+      "deleted": false,
+      "id": 2
+    },
+    {
+      "name": "うどん",
+      "description": "讃岐うどん",
+      "price": "1200",
+      "deleted": false,
+      "id": 3
+    },
+    {
+      "name": "焼き鳥",
+      "description": "タレ",
+      "price": "100",
+      "deleted": false,
+      "id": 4
+    }
+  ]
+}
