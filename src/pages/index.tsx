@@ -1,13 +1,10 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from '@next/font/google';
-import styles from '@/styles/Home.module.css';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
 export async function getStaticProps() {
   const res = await fetch('http://localhost:8000/items');
-  const listData = await res.json(); 
+  const listData = await res.json();
   return {
     props: { listData },
     revalidate: 10,
@@ -50,23 +47,28 @@ export default function Home({ listData }: List) {
       </Head>
       <main>
         <h1>商品一覧</h1>
+        <Link href="components/register">商品登録</Link>
+        <table>
+          {listData.map((data) => (
+            <tr key={data.id}>
+              <td>{data.id}</td>
+              <td>
+                <Link href={`items/${data.id}`}>{data.name}</Link>
+              </td>
+              <td>{data.description}</td>
+              <td>
+                <button
+                  type="button"
+                  onClick={() => deleteItem(data.id)}
+                  className="button"
+                >
+                  削除
+                </button>
+              </td>
+            </tr>
+          ))}
+        </table>
       </main>
-      <Link href="components/register">
-        商品登録
-      </Link>
-      <ul>
-        {listData.map((data) => (
-          <li key={data.id}>
-            <Link href={`items/${data.id}`}>
-              {data.id}&nbsp;:&nbsp;{data.name}
-            </Link>
-            <p>{data.description}</p>
-            <Link href={'/'}>
-            <button onClick={() => deleteItem(data.id)}>削除</button>
-            </Link>
-          </li>
-        ))}
-      </ul>
     </>
   );
 }

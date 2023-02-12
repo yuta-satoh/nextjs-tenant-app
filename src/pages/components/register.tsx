@@ -154,7 +154,7 @@ export default function Post() {
           <input
             type="text"
             id="name"
-            className="name"
+            className="inputItem"
             name="name"
             value={i.name}
             onChange={makeDate}
@@ -175,6 +175,7 @@ export default function Post() {
             type="text"
             id="imageUrl"
             name="imageUrl"
+            className="inputItem"
             onChange={makeDate}
           />
         </div>
@@ -183,7 +184,7 @@ export default function Post() {
           <br />
           <textarea
             id="description"
-            className="description"
+            className="inputItem"
             name="description"
             value={i.description}
             onChange={makeDate}
@@ -195,7 +196,7 @@ export default function Post() {
           <input
             type="number"
             id="price"
-            className="price"
+            className="inputItem"
             name="price"
             value={i.price}
             onChange={makeDate}
@@ -208,7 +209,7 @@ export default function Post() {
           <input
             type="text"
             id="option"
-            className="options"
+            className="inputItem"
             name="name"
             value={i.options.name}
             onChange={makeOption}
@@ -219,7 +220,7 @@ export default function Post() {
           <br />
           <textarea
             id="option-description"
-            className="options"
+            className="inputItem"
             name="description"
             value={i.options.description}
             onChange={makeOptionDescription}
@@ -231,14 +232,14 @@ export default function Post() {
           <input
             type="number"
             id="option-price"
-            className="options"
+            className="inputItem"
             name="price"
             value={i.options.price}
             onChange={makeOptionPrice}
           />
         </div>
         <p>オプション適用価格：{Number(i.price) + Number(i.options.price)}円</p>
-        <button type="button" onClick={register}>
+        <button type="button" className='button' onClick={register}>
           登録
         </button>
       </form>
