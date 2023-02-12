@@ -49,6 +49,7 @@ export default function Home({ listData }: List) {
         <h1>商品一覧</h1>
         <Link href="components/register">商品登録</Link>
         <table>
+        {/* <table> タグ内には <tbody> が必要  */}
           <tbody>
           {listData.map((data) => (
             <tr key={data.id}>
